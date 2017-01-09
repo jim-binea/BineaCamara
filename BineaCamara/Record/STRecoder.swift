@@ -29,11 +29,11 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     private(set) var isRecording: Bool = false
     private(set) var hasStartSession: Bool = false
     
-    var eaglContext: EAGLContext
-    var ciContext: CIContext
-    var blurFilter: CIFilter
+//    var eaglContext: EAGLContext
+//    var ciContext: CIContext
+//    var blurFilter: CIFilter
     
-    var previewLayer: GLKView
+    var previewLayer: CoreImageView
     var previewView: UIView? {
         didSet {
             previewLayer.removeFromSuperview()
@@ -64,14 +64,7 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     }
     
     override init() {
-        eaglContext = EAGLContext(api: .openGLES2)
-        previewLayer = GLKView()
-        
-        previewLayer.context = eaglContext
-        previewLayer.enableSetNeedsDisplay = false
-        ciContext = CIContext(eaglContext: eaglContext)
-        blurFilter = CIFilter(name: "CIGaussianBlur")!
-        blurFilter.setValue(10, forKey: "inputRadius")
+        previewLayer = CoreImageView()
         
         captureSession = AVCaptureSession()
         captureSession.sessionPreset = AVCaptureSessionPreset1280x720
@@ -85,7 +78,7 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         }
         
         videoOutput = AVCaptureVideoDataOutput()
-        
+//        videoOutput.alwaysDiscardsLateVideoFrames = true
         if captureSession.canAddOutput(videoOutput) {
             captureSession.addOutput(videoOutput)
         }
@@ -157,10 +150,10 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
         let image = CIImage(cvPixelBuffer: CMSampleBufferGetImageBuffer(sampleBuffer)!)
+        let blurFilter = CIFilter(name: "CIGaussianBlur")!
+        blurFilter.setValue(2, forKey: "inputRadius")
         blurFilter.setValue(image, forKey:"inputImage")
-        previewLayer.display()
-        ciContext.draw(blurFilter.outputImage!, in: previewLayer.bounds, from: previewLayer.bounds)
-        
+        previewLayer.image = blurFilter.outputImage
     }
     
 }

@@ -16,6 +16,9 @@
 		36A85CD01E22858A006C1B93 /* BineaCamaraTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A85CCF1E22858A006C1B93 /* BineaCamaraTests.swift */; };
 		36A85CDB1E22858A006C1B93 /* BineaCamaraUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A85CDA1E22858A006C1B93 /* BineaCamaraUITests.swift */; };
 		B3469FC31E2370BF005E7A15 /* STRecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3469FC21E2370BF005E7A15 /* STRecoder.swift */; };
+		B3469FC51E238819005E7A15 /* CameraBufferSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3469FC41E238819005E7A15 /* CameraBufferSource.swift */; };
+		B3469FC71E238DB1005E7A15 /* CoreImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3469FC61E238DB1005E7A15 /* CoreImageView.swift */; };
+		B3469FC91E238E13005E7A15 /* FunctionalCoreImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3469FC81E238E13005E7A15 /* FunctionalCoreImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +54,9 @@
 		36A85CDA1E22858A006C1B93 /* BineaCamaraUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BineaCamaraUITests.swift; sourceTree = "<group>"; };
 		36A85CDC1E22858A006C1B93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3469FC21E2370BF005E7A15 /* STRecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STRecoder.swift; sourceTree = "<group>"; };
+		B3469FC41E238819005E7A15 /* CameraBufferSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraBufferSource.swift; sourceTree = "<group>"; };
+		B3469FC61E238DB1005E7A15 /* CoreImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreImageView.swift; sourceTree = "<group>"; };
+		B3469FC81E238E13005E7A15 /* FunctionalCoreImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionalCoreImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +110,9 @@
 				B3469FC11E2370BF005E7A15 /* Record */,
 				36A85CB71E22858A006C1B93 /* AppDelegate.swift */,
 				36A85CB91E22858A006C1B93 /* MainViewController.swift */,
+				B3469FC41E238819005E7A15 /* CameraBufferSource.swift */,
+				B3469FC81E238E13005E7A15 /* FunctionalCoreImage.swift */,
+				B3469FC61E238DB1005E7A15 /* CoreImageView.swift */,
 				36A85CBB1E22858A006C1B93 /* Main.storyboard */,
 				36A85CC11E22858A006C1B93 /* Assets.xcassets */,
 				36A85CC31E22858A006C1B93 /* LaunchScreen.storyboard */,
@@ -277,7 +286,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				36A85CBA1E22858A006C1B93 /* MainViewController.swift in Sources */,
+				B3469FC51E238819005E7A15 /* CameraBufferSource.swift in Sources */,
 				B3469FC31E2370BF005E7A15 /* STRecoder.swift in Sources */,
+				B3469FC91E238E13005E7A15 /* FunctionalCoreImage.swift in Sources */,
+				B3469FC71E238DB1005E7A15 /* CoreImageView.swift in Sources */,
 				36A85CC01E22858A006C1B93 /* BineaCamara.xcdatamodeld in Sources */,
 				36A85CB81E22858A006C1B93 /* AppDelegate.swift in Sources */,
 			);

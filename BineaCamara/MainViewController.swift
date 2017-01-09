@@ -10,34 +10,53 @@ import UIKit
 import CoreImage
 import OpenGLES
 import GLKit
+import AVFoundation
 
 class MainViewController: UIViewController {
-    let recorder = STRecoder()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let glView = GLKView(frame: UIScreen.main.bounds)
-//        view.addSubview(glView)        
-//        
-//        let eaglContext = EAGLContext(api: .openGLES2)!
-//        let ciContext = CIContext(eaglContext: eaglContext)
-//        let blurFilter = CIFilter(name: "CIGaussianBlur")!
-//        blurFilter.setValue(2, forKey: "inputRadius")
-//        
-//        glView.context = eaglContext
-//        
-//        let image = CIImage(image: #imageLiteral(resourceName: "image"))!
-//        blurFilter.setValue(image, forKey:"inputImage")
-//        
-//        ciContext.draw(blurFilter.outputImage!, in: glView.bounds, from: glView.bounds)
+    }
+    
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        recorder.previewView = view
+//    }
+    
+    var source: CaptureBufferSource?
+    var coreImageView: CoreImageView?
+    
+    var angleForCurrentTime: Float {
+        return Float(NSDate.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: M_PI)*2)
+    }
+    
+    override func loadView() {
+        coreImageView = CoreImageView(frame: CGRect())
+        self.view = coreImageView
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        recorder.previewView = view
+        setupCameraSource()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        source?.running = false
+    }
     
-    
+    func setupCameraSource() {
+        source = CaptureBufferSource(position: .back) { [unowned self] (buffer, transform) in
+            let input = CIImage(buffer: buffer).applying(transform)
+            let filter = hueAdjust(self.angleForCurrentTime)
+            self.coreImageView?.image = filter(input)
+        }
+        source?.running = true
+    }
 }
 
+extension CIImage {
+    convenience init(buffer: CMSampleBuffer) {
+        self.init(cvPixelBuffer: CMSampleBufferGetImageBuffer(buffer)!)
+    }
+}
