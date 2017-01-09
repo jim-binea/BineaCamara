@@ -23,7 +23,7 @@ func blur(_ radius: Double) -> Filter {
     }
 }
 
-func colorGenerator(_ color: UIColor) -> Filter {
+func colorGenerator(_ color: CIColor) -> Filter {
     return { _ in
         let parameters = [kCIInputColorKey: color]
         let filter = CIFilter(name: "CIConstantColorGenerator",
@@ -99,6 +99,15 @@ func radialGradient(_ center: CGPoint, radius: CGFloat) -> CIImage {
     return CIFilter(name: "CIRadialGradient", withInputParameters: params)!.outputImage!
 }
 
+func comicEffect() -> Filter {
+    return { image in
+        let parameters = [
+            kCIInputImageKey: image,
+            ] as [String : Any]
+        return CIFilter(name: "CIComicEffect", withInputParameters: parameters)!.outputImage!
+    }
+}
+
 func blendWithMask(_ background: CIImage, mask: CIImage) -> Filter {
     return { image in
         let parameters = [
@@ -115,7 +124,7 @@ func blendWithMask(_ background: CIImage, mask: CIImage) -> Filter {
 
 func colorOverlay(_ color: UIColor) -> Filter {
     return { image in
-        let overlay = colorGenerator(color)(image)
+        let overlay = colorGenerator(CIColor(color: color))(image)
         return compositeSourceOver(overlay)(image)
     }
 }

@@ -49,7 +49,8 @@ class MainViewController: UIViewController {
         source = CaptureBufferSource(position: .back) { [unowned self] (buffer, transform) in
             let input = CIImage(buffer: buffer).applying(transform)
             let filter = hueAdjust(self.angleForCurrentTime)
-            self.coreImageView?.image = filter(input)
+            let filter2 = comicEffect()
+            self.coreImageView?.image = (filter2>>>filter)(input)
         }
         source?.running = true
     }
