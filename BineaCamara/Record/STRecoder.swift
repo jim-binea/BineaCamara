@@ -2,7 +2,7 @@
 //  AssetLoadTask.swift
 //  VideoRecorder
 //
-//  Created by Leo on 2016/12/16.
+//  Created by Binea on 2016/12/16.
 //  Copyright © 2016年 Binea. All rights reserved.
 //
 
@@ -11,40 +11,26 @@ import AVKit
 import AVFoundation
 import GLKit
 
-//enum CameraFlashMode {
-//    case light
-//    case auto
-//    case off
-//}
+enum CameraFlashMode {
+    case light
+    case auto
+    case off
+}
 
-class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
+protocol STRecoderDelegate: class {
+    func recoder(recorder: STRecoder, didOutputSampleBuffer sampleBuffer: CMSampleBuffer)
+}
+
+class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     var videoDevice: AVCaptureDevice?
     var videoDeviceInput: AVCaptureDeviceInput?
     var videoInput: AVAssetWriterInput?
     
-    var captureSession: AVCaptureSession
-    
     var videoOutput: AVCaptureVideoDataOutput
     
-    private(set) var isRecording: Bool = false
-    private(set) var hasStartSession: Bool = false
+    var captureSession: AVCaptureSession
     
-//    var eaglContext: EAGLContext
-//    var ciContext: CIContext
-//    var blurFilter: CIFilter
-    
-    var previewLayer: CoreImageView
-    var previewView: UIView? {
-        didSet {
-            previewLayer.removeFromSuperview()
-            if let view = previewView {
-                previewLayer.frame = view.bounds
-                view.insertSubview(previewLayer, at: 0)
-            }
-        }
-    }
-    
-    
+    weak var delegate: STRecoderDelegate?
     
     private(set) var videoDevicePosition: AVCaptureDevicePosition = .back {
         didSet {
@@ -64,10 +50,8 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     }
     
     override init() {
-        previewLayer = CoreImageView()
-        
         captureSession = AVCaptureSession()
-        captureSession.sessionPreset = AVCaptureSessionPreset1280x720
+        captureSession.sessionPreset = AVCaptureSessionPresetHigh
         
         if let videoDevice = STRecoder.videoDeviceForPosition(position: videoDevicePosition), let videoInput = try? AVCaptureDeviceInput(device: videoDevice){
             self.videoDevice = videoDevice
@@ -78,7 +62,7 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         }
         
         videoOutput = AVCaptureVideoDataOutput()
-//        videoOutput.alwaysDiscardsLateVideoFrames = true
+        videoOutput.alwaysDiscardsLateVideoFrames = true
         if captureSession.canAddOutput(videoOutput) {
             captureSession.addOutput(videoOutput)
         }
@@ -112,6 +96,7 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     func switchCaptureDevices() {
         videoDevicePosition = videoDevice?.position == .back ? .front : .back
     }
+    
     func setFlashMode(flashMode: AVCaptureFlashMode) {
         if let device = videoDevice, device.hasFlash {
             do {
@@ -130,6 +115,16 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         }
     }
     
+    //MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+    
+    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+        delegate?.recoder(recorder: self, didOutputSampleBuffer: sampleBuffer)
+    }
+    
+}
+
+extension STRecoder {
+    
     static func videoDeviceForPosition(position: AVCaptureDevicePosition) -> AVCaptureDevice? {
         guard let videoDevices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) as? [AVCaptureDevice] else {
             return nil
@@ -141,19 +136,4 @@ class STRecoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         }
         return nil
     }
-    
-    func teardownAssetWriterAndInputs() {
-        videoInput = nil
-    }
-    
-    //MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
-    
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
-        let image = CIImage(cvPixelBuffer: CMSampleBufferGetImageBuffer(sampleBuffer)!)
-        let blurFilter = CIFilter(name: "CIGaussianBlur")!
-        blurFilter.setValue(2, forKey: "inputRadius")
-        blurFilter.setValue(image, forKey:"inputImage")
-        previewLayer.image = blurFilter.outputImage
-    }
-    
 }
